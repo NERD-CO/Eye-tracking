@@ -19,25 +19,16 @@ function [] = Edf2Mat_UCH(edfFile, patientID, recordingDate)
 % Set path structure
 paths = [];
 uiwait(msgbox('Navigate to and select folder that contains .edf file'))
-    %e.g. 'C:\Users\darwinm\Documents\Thompson Lab\Microwire\PatientData\MW9\'
+%e.g. 'C:\Users\darwinm\Documents\Thompson Lab\Microwire\PatientData\MW9\'
 paths.basePath = uigetdir;
 paths.path_edf = [strcat(paths.basePath,'\',edfFile)];
 cd(paths.basePath);
 
+% Construct new file name
+filename = [strcat('eyetrack_', patientID, '_', recordingDate, '.mat')];
 % Convert chosen .edf file to .mat file and save
-edf = Edf2Mat(paths.path_edf);
-save(edf);
+edfRAW = Edf2Mat(paths.path_edf);
+save(filename,'edfRAW');
 
-% Rename saved .mat file with patientID & recordingDate inputs
-    % Extract original file name
-    str=[edf.matFilename];
-    level=wildcardPattern + "\";
-    pat = asManyOfPattern(level);
-    filename_old = extractAfter(str,pat);
-    
-    % Construct new file name 
-    filename = [strcat('eyetrack_', patientID, '_', recordingDate, '.mat')];
-    
-cd(paths.basePath);
-movefile(filename_old, filename); % Rename 
+
 end
