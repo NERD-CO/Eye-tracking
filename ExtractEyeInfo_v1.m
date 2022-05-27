@@ -1,4 +1,4 @@
-function [] = ExtractEyeInfo_v1(eyeMatfile)
+function [tsTable, picTable, fixTab, saccTab, rawTab] = ExtractEyeInfo_v1(eyeMatfile)
 
 
 % eyeMatfile = 'eyetrack_mw3_05022022.mat';
