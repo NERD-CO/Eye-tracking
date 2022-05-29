@@ -16,6 +16,12 @@ function [] = Edf2Mat_UCH(edfFile, patientID, recordingDate)
 % patientID = 'MW9';
 % recordingDate = '01162022';
 
+
+% uiwait - Select the Folder for edf-converter
+% edfLoc = uigetdir()
+% addpath(genpath(edfLoc))
+
+
 % Set path structure
 paths = [];
 uiwait(msgbox('Navigate to and select folder that contains .edf file'))
