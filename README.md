@@ -1,5 +1,5 @@
 # Eye-tracking analysis tools
-*Last update: May 15 2022*
+*Last update: June 17 2022*
 
 
 Uses [Edf2Mat Matlab toolbox](https://github.com/mzhuang666/edf-converter).
