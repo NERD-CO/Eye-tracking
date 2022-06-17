@@ -9,18 +9,17 @@
 %
 % Output: File saved with patient ID and date of recording
 %
-% Marielle L. Darwin | May 11 2022
+% Marielle L. Darwin & John A. Thompson | May 11 2022 | Last update: June 17 2022
 
 function [] = Edf2Mat_UCH(edfFile, patientID, recordingDate)
 % edfFile = 'NO20221615110.edf';
 % patientID = 'MW9';
 % recordingDate = '01162022';
 
-
-% uiwait - Select the Folder for edf-converter
-% edfLoc = uigetdir()
-% addpath(genpath(edfLoc))
-
+% Select folder for edf-converter
+uiwait(msgbox('Navigate to and select edf-converter folder'))
+edfLoc = uigetdir();
+addpath(genpath(edfLoc));
 
 % Set path structure
 paths = [];
@@ -32,9 +31,8 @@ cd(paths.basePath);
 
 % Construct new file name
 filename = [strcat('eyetrack_', patientID, '_', recordingDate, '.mat')];
+
 % Convert chosen .edf file to .mat file and save
 edfRAW = Edf2Mat(paths.path_edf);
 save(filename,'edfRAW');
-
-
 end
