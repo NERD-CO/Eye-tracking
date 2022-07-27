@@ -1,9 +1,10 @@
 # Eye-tracking analysis tools
-*Last update: June 17 2022*
+*Last update: July 27 2022*
 
+## Requirements
+* [Edf2Mat Matlab toolbox](https://github.com/mzhuang666/edf-converter)
 
-Uses [Edf2Mat Matlab toolbox](https://github.com/mzhuang666/edf-converter).
-NOTE: Need to have this toolbox downloaded
+  *Note:* Toolbox must be downloaded for use with ```Edf2Mat_UCH```
 
 ## User guide
 1. ```Edf2Mat_UCH```: Converts .edf file to .mat file
