@@ -4,17 +4,20 @@
 % Uses Edf2Mat Matlab toolbox found at github.com/mzhuang666/edf-converter
 %      NOTE: Need to have this toolbox downloaded and on path 
 %
-% Inputs: 1) file to convert 2) Patient ID, 3)date of recording (MMDDYYYY)
-% Example function call: Edf2Mat_UCH('NO20221615110.edf', 'MW9', '01162022')
+% Inputs: 1) file to convert 2) Patient ID, 3) block (learning 'L' or recog 'R'), 
+% 4)date of recording (MMDDYYYY)
 %
-% Output: File saved with patient ID and date of recording
+% Output: File saved with patient ID, block type, and date of recording
 %
-% Marielle L. Darwin & John A. Thompson | May 11 2022 | Last update: June 17 2022
+% Example function call: Edf2Mat_UCH('NO20221615110.edf', 'MW9', 'L', '01062022')
+%
+% Marielle L. Darwin & John A. Thompson | May 11 2022 | Last update: July 27 2022
 
-function [] = Edf2Mat_UCH(edfFile, patientID, recordingDate)
+function [eyeMatfile] = Edf2Mat_UCH(edfFile, patientID, block, recordingDate)
 % edfFile = 'NO20221615110.edf';
 % patientID = 'MW9';
-% recordingDate = '01162022';
+% block = 'L';
+% recordingDate = '01062022';
 
 % Select folder for edf-converter
 uiwait(msgbox('Navigate to and select edf-converter folder'))
@@ -30,9 +33,10 @@ paths.path_edf = [strcat(paths.basePath,'\',edfFile)];
 cd(paths.basePath);
 
 % Construct new file name
-filename = [strcat('eyetrack_', patientID, '_', recordingDate, '.mat')];
+filename = [strcat('eyetrack_', patientID, '_', block, '_', recordingDate, '.mat')];
 
 % Convert chosen .edf file to .mat file and save
 edfRAW = Edf2Mat(paths.path_edf);
 save(filename,'edfRAW');
+eyeMatfile = filename;
 end
