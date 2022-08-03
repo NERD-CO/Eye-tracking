@@ -38,7 +38,8 @@ durAll2 = durAll(durAll ~= 0);
 dateAll2 = dateAll(durAll ~= 0);
 sessAAL2 = sessAAL(durAll ~= 0);
 
-table(sessAAL2, durAll2,dateAll2,'VariableNames',{'SessNum','Duration','Date'})
+sess2useTab = table(sessAAL2, durAll2,dateAll2,'VariableNames',{'SessNum','Duration','Date'});
+sess2useTf = sess2useTab([1:4,6:7],:);
 
 
 %% Check for Starting Recording
@@ -108,13 +109,56 @@ for bi = 1:length(txtList)
 
 end
 
+sessEBtable = table(dateID, blockt , varT , texTfn , eyefn , eyePfn, 'VariableNames',...
+    {'FDate','Block','Variant','BehTxt','EyeTxtR','EyeTxtP'});
 
+% ADD Session NUMBER column 
+behEdatet = cell(height(sessEBtable),1);
+for st = 1:height(sessEBtable)
 
+    tmpT = sessEBtable.Date{st};
+    if length(tmpT) <= 12 % likely single value day and month
+        yEAR = tmpT(1:4);
+        mONTH = tmpT(5);
+        daY = tmpT(6);
+        hOUr2 = tmpT(7:8);
+
+    else
+        keyboard;
+    end
+    tmpbeD = datetime([yEAR, '-' mONTH, '-', daY, '-' , hOUr2], 'InputFormat', 'yyyy-MM-DD-HH');
+    behEdatet{st} = tmpbeD;
+end
+
+sessEBtable.BehEdate = behEdatet;
+sessEBNtable = [sessEBtable , sess2useTf];
 
 
 %% Align eye-track / ttl event ids
 
+for si = 1:length(sessAAL2)
 
+    % Get Session TTL id - USE sessEBtable
+    tmpSessEvs = saveSessAll{sessAAL2(si)}.SessionInfo.tInfo(start(si):stop(si));
+    tmpSessSp = split(tmpSessEvs,{' ','.','(',')'});
+    tmpSessU = tmpSessSp(:,11);
+    tmpSessN = cellfun(@(x) hex2dec(x) , tmpSessU);
+
+    % Get EYE data
+    
+
+
+
+
+
+
+
+
+
+
+
+
+end
 
 
 
