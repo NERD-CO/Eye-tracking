@@ -1,13 +1,13 @@
 % Check allsession data for MW9
 
-%% CD to directory
+%% CD to directory - CHECK ALL MW Sessions - FOR NEW MEMORY NEW OLD
 
 directory = 'Y:\';
 patDir = 'PatientData_MW\MW9\NWBProcessing\';
 tmpDir = [directory , patDir];
 
 
-%% load in allsessions file
+%% load in allsessions file - GO TO SESSION DIR
 
 sessDir = [tmpDir , 'Session_Data\'];
 cd(sessDir)
@@ -38,11 +38,12 @@ durAll2 = durAll(durAll ~= 0);
 dateAll2 = dateAll(durAll ~= 0);
 sessAAL2 = sessAAL(durAll ~= 0);
 
-sess2useTab = table(sessAAL2, durAll2,dateAll2,'VariableNames',{'SessNum','Duration','Date'});
+sess2useTab = table(sessAAL2, durAll2,dateAll2,'VariableNames',{'SessNum',...
+    'Duration','Date'});
 sess2useTf = sess2useTab([1:4,6:7],:);
 
 
-%% Check for Starting Recording
+%% Check for Starting Recording - NEED TO MANUAL FIX
 
 stINDs = find(matches(saveSessAll{2,1}.SessionInfo.tInfo,'Starting Recording'));
 firstTTls = stINDs + 1;
@@ -53,12 +54,12 @@ block2end = 1046;
 
 % Get block ttl count n = 6
 start = [40; 542; 2; 523; 3; 521];
-stop = [537; 1046; 518; 1026; 516; 1015];
+stop = [537; 1046; 518; 1026; 516; 1024];
 numEvents = stop - start;
 
 %% Load in event files and match block numbers
 
-rawtBloc = 'Y:\PatientData_MW\MW9\Behavioral-Data\RawData';
+rawtBloc = 'Y:\PatientData_MW\MW9\Behavioral-Data\Raw';
 raweBloc =  'Y:\PatientData_MW\MW9\Eye-tracking\Raw';
 proeBloc = 'Y:\PatientData_MW\MW9\Eye-tracking\Processed';
 
@@ -103,20 +104,23 @@ for bi = 1:length(txtList)
     texTfn{bi} = tmpTxt;
     eyefn{bi} = eyeFind;
 
-    eyePrName = Edf2Mat_UCH(eyeFind, 'MW9', blockt{bi}(1), txtSp{1}, raweBloc, proeBloc);
+    eyePrName = Edf2Mat_UCH(eyeFind, 'MW9', blockt{bi}(1), txtSp{1},...
+        raweBloc, proeBloc);
 
     eyePfn{bi} = eyePrName;
 
 end
 
-sessEBtable = table(dateID, blockt , varT , texTfn , eyefn , eyePfn, 'VariableNames',...
-    {'FDate','Block','Variant','BehTxt','EyeTxtR','EyeTxtP'});
+sessEBtable = table(dateID, blockt , varT , texTfn , eyefn , eyePfn,...
+    'VariableNames', {'FDate','Block','Variant','BehTxt','EyeTxtR','EyeTxtP'});
+
+sessEBNtable = [sessEBtable , sess2useTf];
 
 % ADD Session NUMBER column 
-behEdatet = cell(height(sessEBtable),1);
-for st = 1:height(sessEBtable)
+behEdatet = cell(height(sessEBNtable),1);
+for st = 1:height(sessEBNtable)
 
-    tmpT = sessEBtable.Date{st};
+    tmpT = sessEBNtable.FDate{st};
     if length(tmpT) <= 12 % likely single value day and month
         yEAR = tmpT(1:4);
         mONTH = tmpT(5);
@@ -126,25 +130,72 @@ for st = 1:height(sessEBtable)
     else
         keyboard;
     end
-    tmpbeD = datetime([yEAR, '-' mONTH, '-', daY, '-' , hOUr2], 'InputFormat', 'yyyy-MM-DD-HH');
+    if length(mONTH) == 1
+        monTu = 'M';
+    else
+        monTu = 'MM';
+    end
+    if length(daY) == 1
+        daTu = 'd';
+    else
+        daTu = 'dd';
+    end
+    tmpbeD = datetime([yEAR, '-' mONTH, '-', daY, '-' , hOUr2], 'InputFormat',...
+        ['yyyy-',monTu,'-',daTu,'-HH']);
     behEdatet{st} = tmpbeD;
 end
 
-sessEBtable.BehEdate = behEdatet;
-sessEBNtable = [sessEBtable , sess2useTf];
+sessEBNtable.BehEdate = behEdatet;
+
+%% Get processed eye data
+
+sessEyedata = struct;
+for eii = 1:height(sessEBNtable)
+
+    tmpSessTAB = sessEBNtable.SessNum(eii);
+
+    [tsTable, ~, ~, ~, rawTab] = ExtractEyeInfo_v2(sessEBNtable.EyeTxtP{eii});
+    sessEyedata.(['S_',num2str(tmpSessTAB)]).TStable = tsTable;
+    sessEyedata.(['S_',num2str(tmpSessTAB)]).RAWtable = rawTab;
+
+end
+
+%% Save out data 
+
+save('SessionEyeNLX.mat','sessEBNtable','sessEyedata');
 
 
 %% Align eye-track / ttl event ids
 
-for si = 1:length(sessAAL2)
+for si = 1:height(sessEBNtable)
 
     % Get Session TTL id - USE sessEBtable
-    tmpSessEvs = saveSessAll{sessAAL2(si)}.SessionInfo.tInfo(start(si):stop(si));
+    tmpSessEvs = saveSessAll{sessEBNtable.SessNum(si)}.SessionInfo.tInfo(start(si):stop(si));
+    tsFnlx = saveSessAll{sessEBNtable.SessNum(si)}.SessionInfo.ts(start(si):stop(si));
     tmpSessSp = split(tmpSessEvs,{' ','.','(',')'});
     tmpSessU = tmpSessSp(:,11);
     tmpSessN = cellfun(@(x) hex2dec(x) , tmpSessU);
 
     % Get EYE data
+    eyeSESS = ['S_',num2str(sessEBNtable.SessNum(si))];
+    eyeTAB = sessEyedata.(eyeSESS).TStable;
+    eyeEvents = eyeTAB.TTLid;
+
+    % Fix to NLX TTL
+    finleyeEvTab = eyeTAB(5:end,:);
+    finaleyeEvnts = finleyeEvTab.TTLid;
+
+    % check offset in time
+    eyeFS = 1000;
+    eyeOFF = (double(finleyeEvTab.timeStamp(2) - finleyeEvTab.timeStamp(1)))/eyeFS;
+
+    nlxFS = 1000000;
+    nlxOFF = (tsFnlx(2) - tsFnlx(1))/nlxFS;
+
+
+
+
+
     
 
 
