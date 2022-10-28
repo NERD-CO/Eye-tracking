@@ -83,7 +83,8 @@ for oi = 1:length(outFOLDS)
 
         end
 
-
+        % ADD CODE HERE ---- CREATE A NEW FOR LOOP SIMILAR to 59-84 for NEW
+        % IMAGES!!!!!!!!! HAVE FUN!!!!!!!!!!!!!
 
 
 
