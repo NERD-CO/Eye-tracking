@@ -13,9 +13,11 @@ function [] = Initial_EyeAnalysis()
 % learning = [55, 1, 2, 3 20, 21, 6, 66];
 % recog = [55, 1, 2, 3, 31:36, 66];
 
+% Location of the variant.xlsx
 excelLOC = 'C:\Users\Admin\Desktop\dataOut_AMC';
 cd(excelLOC)
 varTable = readtable('variantLIST.xlsx');
+% Location of eye tracking folders [from Teams]
 mainLOC = 'C:\Users\Admin\Desktop\dataOut_AMC\dataOut_AMC\eyeTrack';
 cd(mainLOC)
 [outFOLDS] = getfiles(mainLOC,1,nan);
