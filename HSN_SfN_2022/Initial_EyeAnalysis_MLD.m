@@ -172,166 +172,166 @@ end
 
 
 
-% function [outfiles] = getfiles(dirIN,stage,ftype)
-% 
-% cd(dirIN)
-% switch stage
-%     case 1
-% 
-%         foldeS = dir();
-%         foldeS2 = {foldeS.name};
-%         foldeS3 = foldeS2(~ismember(foldeS2,{'.','..'}));
-%         outfiles = foldeS3;
-%     case 2
-% 
-%         filES = dir(['*.',ftype]);
-%         filES2 = {filES.name};
-%         outfiles = filES2;
-% 
-% end
-% 
-% 
-% end
+function [outfiles] = getfiles(dirIN,stage,ftype)
+
+cd(dirIN)
+switch stage
+    case 1
+
+        foldeS = dir();
+        foldeS2 = {foldeS.name};
+        foldeS3 = foldeS2(~ismember(foldeS2,{'.','..'}));
+        outfiles = foldeS3;
+    case 2
+
+        filES = dir(['*.',ftype]);
+        filES2 = {filES.name};
+        outfiles = filES2;
+
+end
 
 
-% % Pic info
-% function [picINFOtab] = getPICinfo(inTable)
-% 
-% picLOCa = inTable.PicLocation;
-% fparTs = split(picLOCa,'\');
-% numCAT = fparTs(:,11);
-% catSubn = cellfun(@(x) str2double(x(1)), numCAT, 'UniformOutput',true);
-% catID = cellfun(@(x) x(2:end), numCAT, 'UniformOutput',false);
-% picJPG = inTable.Picture;
-% picNUMs = cellfun(@(x) split(x,'.'), picJPG, 'UniformOutput',false);
-% picNUM = cellfun(@(x) str2double(x{1}), picNUMs, 'UniformOutput',true);
-% picINFOtab = inTable;
-% picINFOtab.CatNUM = catSubn;
-% picINFOtab.CatID = catID;
-% picINFOtab.PicNUM = picNUM;
-% 
-% tmpCombine = cell(length(catSubn),1);
-% for pi = 1:length(catSubn)
-%     tmpCombine{pi} = [num2str(catSubn(pi)),'.',num2str(picNUM(pi))];
-% end
-% picINFOtab.CatPICid = tmpCombine;
-% 
-% end
+end
 
 
-% % Trial info
-% function [trialINFOtab] = getTRIinfo(inTable)
-% 
-% ttlIDt = inTable.TTLid;
-% 
-% ttltrialID = zeros(length(ttlIDt),1);
-% trialcount = 0;
-% for ti = 1:length(ttltrialID)
-%     tmpT = ttlIDt(ti);
-%     if tmpT == 1
-%         trialcount = trialcount + 1;
-%         ttltrialID(ti) = trialcount;
-%     else
-%         ttltrialID(ti) = trialcount;
-%     end
-% 
-% end
-% 
-% % start and end
-% ttltrialID(ttlIDt == 55) = 0;
-% ttltrialID(ttlIDt == 66) = 0;
-% 
-% trialINFOtab = inTable;
-% trialINFOtab.TrialID = ttltrialID;
-% 
-% 
-% end
+% Pic info
+function [picINFOtab] = getPICinfo(inTable)
+
+picLOCa = inTable.PicLocation;
+fparTs = split(picLOCa,'\');
+numCAT = fparTs(:,11);
+catSubn = cellfun(@(x) str2double(x(1)), numCAT, 'UniformOutput',true);
+catID = cellfun(@(x) x(2:end), numCAT, 'UniformOutput',false);
+picJPG = inTable.Picture;
+picNUMs = cellfun(@(x) split(x,'.'), picJPG, 'UniformOutput',false);
+picNUM = cellfun(@(x) str2double(x{1}), picNUMs, 'UniformOutput',true);
+picINFOtab = inTable;
+picINFOtab.CatNUM = catSubn;
+picINFOtab.CatID = catID;
+picINFOtab.PicNUM = picNUM;
+
+tmpCombine = cell(length(catSubn),1);
+for pi = 1:length(catSubn)
+    tmpCombine{pi} = [num2str(catSubn(pi)),'.',num2str(picNUM(pi))];
+end
+picINFOtab.CatPICid = tmpCombine;
+
+end
 
 
+% Trial info
+function [trialINFOtab] = getTRIinfo(inTable)
 
-% % Get TS info
-% function [tsBlk_OUT] = getTSBlock(startI,endI,rawT)
-% 
-% [~, eyeTTL1_i] = min(abs(double(startI) - rawT.Time)); 
-% [~, eyeTTL2_i] = min(abs(double(endI) - rawT.Time)); 
-% 
-% tsBlk_OUT = rawT(eyeTTL1_i:eyeTTL2_i,:);
-% 
-% 
-% end
+ttlIDt = inTable.TTLid;
+
+ttltrialID = zeros(length(ttlIDt),1);
+trialcount = 0;
+for ti = 1:length(ttltrialID)
+    tmpT = ttlIDt(ti);
+    if tmpT == 1
+        trialcount = trialcount + 1;
+        ttltrialID(ti) = trialcount;
+    else
+        ttltrialID(ti) = trialcount;
+    end
+
+end
+
+% start and end
+ttltrialID(ttlIDt == 55) = 0;
+ttltrialID(ttlIDt == 66) = 0;
+
+trialINFOtab = inTable;
+trialINFOtab.TrialID = ttltrialID;
 
 
-% % Clean up Pos
-% function [cleanPOS] = cleanUPpos(posIN)
-% 
-% % nans
-% posT1 = posIN(~isnan(posIN(:,1)),:);
-% posT2 = posT1(~isnan(posT1(:,2)),:);
-% % cleanPOS = posT2;
-% 
-% % long values
-% posL1 = posT2(posT2(:,1) > 1,:);
-% posL2 = posL1(posL1(:,2) > 1,:);
-% 
-% posS1 = smoothdata(posL2(:,1),'gaussian',20);
-% posS2 = smoothdata(posL2(:,2),'gaussian',20);
-% 
-% cleanPOS = [posS1 , posS2];
-% 
-% end
+end
 
 
 
-% function [outEye1 , outEye2] = createEYEtable(ps1,ps2,pos1,pos2)
-% 
-% for ei = 1:2
-%     switch ei
-%         case 1
-%             eyedata = {pos1};
-%             eyeCen = {mean(pos1)};
-%             eyeSD = {std(pos1)};
-%             Q3pos = quantile(pos1,0.75);
-%             Q1pos = quantile(pos1,0.25);
-%             eyeCD = (Q3pos - Q1pos) / (Q3pos + Q1pos);
-%             eyedist = {pdist2(eyeCen{1},eyedata{1},'euclidean')};
-%             pupdata = {ps1};
-%             pupCen = mean(ps1);
-%             pupSD = std(ps1);
-%             Q3pup = quantile(ps1,0.75);
-%             Q1pup = quantile(ps1,0.25);
-%             pupCD = (Q3pup - Q1pup) / (Q3pup + Q1pup);
-% 
-%             outEye1 = table(eyedata,eyeCen,eyeSD,eyeCD,eyedist,...
-%                 pupdata,pupCen,pupSD,pupCD,'VariableNames',...
-%                 {'oT_posit_raw','oT_posit_cen','oT_posit_sd','oT_posit_cd',...
-%                 'oT_posit_dist','oT_pupilS_raw','oT_pupilS_mean','oT_pupilS_sd',...
-%                 'oT_pupilS_cd'});
-% 
-% 
-%         case 2
-% 
-%             eyedata = {pos2};
-%             eyeCen = {mean(pos2)};
-%             eyeSD = {std(pos2)};
-%             Q3pos = quantile(pos2,0.75);
-%             Q1pos = quantile(pos2,0.25);
-%             eyeCD = (Q3pos - Q1pos) / (Q3pos + Q1pos);
-%             eyedist = {pdist2(eyeCen{1},eyedata{1},'euclidean')};
-%             pupdata = {ps2};
-%             pupCen = mean(ps2);
-%             pupSD = std(ps2);
-%             Q3pup = quantile(ps2,0.75);
-%             Q1pup = quantile(ps2,0.25);
-%             pupCD = (Q3pup - Q1pup) / (Q3pup + Q1pup);
-% 
-%             outEye2 = table(eyedata,eyeCen,eyeSD,eyeCD,eyedist,...
-%                 pupdata,pupCen,pupSD,pupCD,'VariableNames',...
-%                 {'oT_posit_raw','oT_posit_cen','oT_posit_sd','oT_posit_cd',...
-%                 'oT_posit_dist','oT_pupilS_raw','oT_pupilS_mean','oT_pupilS_sd',...
-%                 'oT_pupilS_cd'});
-% 
-%     end
-% 
-% 
-% end
-% end
+% Get TS info
+function [tsBlk_OUT] = getTSBlock(startI,endI,rawT)
+
+[~, eyeTTL1_i] = min(abs(double(startI) - rawT.Time)); 
+[~, eyeTTL2_i] = min(abs(double(endI) - rawT.Time)); 
+
+tsBlk_OUT = rawT(eyeTTL1_i:eyeTTL2_i,:);
+
+
+end
+
+
+% Clean up Pos
+function [cleanPOS] = cleanUPpos(posIN)
+
+% nans
+posT1 = posIN(~isnan(posIN(:,1)),:);
+posT2 = posT1(~isnan(posT1(:,2)),:);
+% cleanPOS = posT2;
+
+% long values
+posL1 = posT2(posT2(:,1) > 1,:);
+posL2 = posL1(posL1(:,2) > 1,:);
+
+posS1 = smoothdata(posL2(:,1),'gaussian',20);
+posS2 = smoothdata(posL2(:,2),'gaussian',20);
+
+cleanPOS = [posS1 , posS2];
+
+end
+
+
+
+function [outEye1 , outEye2] = createEYEtable(ps1,ps2,pos1,pos2)
+
+for ei = 1:2
+    switch ei
+        case 1
+            eyedata = {pos1};
+            eyeCen = {mean(pos1)};
+            eyeSD = {std(pos1)};
+            Q3pos = quantile(pos1,0.75);
+            Q1pos = quantile(pos1,0.25);
+            eyeCD = (Q3pos - Q1pos) / (Q3pos + Q1pos);
+            eyedist = {pdist2(eyeCen{1},eyedata{1},'euclidean')};
+            pupdata = {ps1};
+            pupCen = mean(ps1);
+            pupSD = std(ps1);
+            Q3pup = quantile(ps1,0.75);
+            Q1pup = quantile(ps1,0.25);
+            pupCD = (Q3pup - Q1pup) / (Q3pup + Q1pup);
+
+            outEye1 = table(eyedata,eyeCen,eyeSD,eyeCD,eyedist,...
+                pupdata,pupCen,pupSD,pupCD,'VariableNames',...
+                {'oT_posit_raw','oT_posit_cen','oT_posit_sd','oT_posit_cd',...
+                'oT_posit_dist','oT_pupilS_raw','oT_pupilS_mean','oT_pupilS_sd',...
+                'oT_pupilS_cd'});
+
+
+        case 2
+
+            eyedata = {pos2};
+            eyeCen = {mean(pos2)};
+            eyeSD = {std(pos2)};
+            Q3pos = quantile(pos2,0.75);
+            Q1pos = quantile(pos2,0.25);
+            eyeCD = (Q3pos - Q1pos) / (Q3pos + Q1pos);
+            eyedist = {pdist2(eyeCen{1},eyedata{1},'euclidean')};
+            pupdata = {ps2};
+            pupCen = mean(ps2);
+            pupSD = std(ps2);
+            Q3pup = quantile(ps2,0.75);
+            Q1pup = quantile(ps2,0.25);
+            pupCD = (Q3pup - Q1pup) / (Q3pup + Q1pup);
+
+            outEye2 = table(eyedata,eyeCen,eyeSD,eyeCD,eyedist,...
+                pupdata,pupCen,pupSD,pupCD,'VariableNames',...
+                {'oT_posit_raw','oT_posit_cen','oT_posit_sd','oT_posit_cd',...
+                'oT_posit_dist','oT_pupilS_raw','oT_pupilS_mean','oT_pupilS_sd',...
+                'oT_pupilS_cd'});
+
+    end
+
+
+end
+end
