@@ -1,6 +1,14 @@
 %% Data location
+pcname = getenv('COMPUTERNAME');
 
-cd('C:\Users\Admin\Desktop\dataOut_AMC\dataOut_AMC\eyeDATA')
+switch pcname
+    case 'DESKTOP-FAGRV5G'
+        mainDIR = 'E:\Dropbox\SfN_2022\dataOut_AMC';
+        dataDIR = [mainDIR, filesep , 'dataOut_AMC\eyeDATA'];
+end
+
+
+cd(dataDIR)
 
 %% Load the data
 

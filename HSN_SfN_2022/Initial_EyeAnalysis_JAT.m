@@ -9,6 +9,7 @@ function [] = Initial_EyeAnalysis_JAT()
 
 % Loop through files - determine if learn or retrieve
 
+%%%%% CONSIDER LONGER BLOCK OF TIME WITH TIME MARKERS
 
 % learning = [55, 1, 2, 3 20, 21, 6, 66];
 % recog = [55, 1, 2, 3, 31:36, 66];
@@ -58,7 +59,6 @@ for oi = 1:length(outFOLDS)
         old_TS = picT_R.timeStamp(oldImages);
         old_catID = picT_R.CatID(oldImages);
 
-
         alleye_O1 = table;
         alleye_O2 = table;
         for oTrial = 1:length(old_Trial)
@@ -88,15 +88,49 @@ for oi = 1:length(outFOLDS)
             alleye_O1 = [alleye_O1 ; eye1];
             alleye_O2 = [alleye_O2 ; eye2];
 
-
         end
 
-        % ADD CODE HERE ---- CREATE A NEW FOR LOOP SIMILAR to 59-84 for NEW
-        % IMAGES!!!!!!!!! HAVE FUN!!!!!!!!!!!!!
+        new_Trial = picT_R.TrialNum(newImages);
+        new_TS = picT_R.timeStamp(newImages);
+        new_catID = picT_R.CatID(newImages);
+
+        alleye_N1 = table;
+        alleye_N2 = table;
+        for nTrial = 1:length(new_Trial)
+            tmpOtr = new_Trial(nTrial);
+
+            tmpOtrTAB = tsT_R(ismember(tsT_R.TrialID, tmpOtr),:);
+            startTS = tmpOtrTAB.timeStamp(tmpOtrTAB.TTLid == 1);
+            endTS = tmpOtrTAB.timeStamp(tmpOtrTAB.TTLid == 2);
+            
+            [tsBlk_OUT] = getTSBlock(startTS,endTS,rawT_R);
+
+            pupilS_1 = tsBlk_OUT.PupilS(:,1);
+            pupilS_2 = tsBlk_OUT.PupilS(:,2);
+
+            % NEED TO clean up PupilSize
+            
+            % Clean up - nans and high values
+            pos_1 = [tsBlk_OUT.PosX(:,1) , tsBlk_OUT.PosY(:,1)];
+            pos_1c = cleanUPpos(pos_1);
+            pos_2 = [tsBlk_OUT.PosX(:,2) , tsBlk_OUT.PosY(:,2)];
+            pos_2c = cleanUPpos(pos_2);
+
+            [eye1 , eye2] = createEYEtable(pupilS_1,pupilS_2,pos_1c,pos_2c);
+            eye1.catID = new_catID(nTrial);
+            eye2.catID = new_catID(nTrial);
+
+            alleye_N1 = [alleye_N1 ; eye1];
+            alleye_N2 = [alleye_N2 ; eye2];
+
+
+        end
         
         varianTNum = ['var',num2str(allvars(vi))];
         variantS.(varianTNum).eye1O = alleye_O1;
         variantS.(varianTNum).eye2O = alleye_O2;
+        variantS.(varianTNum).eye1N = alleye_N1;
+        variantS.(varianTNum).eye2N = alleye_N2;
 
         % Get pupil size for oldImages during fixation Recog
 
