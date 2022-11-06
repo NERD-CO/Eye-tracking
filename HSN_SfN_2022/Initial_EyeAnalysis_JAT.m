@@ -15,11 +15,11 @@ function [] = Initial_EyeAnalysis_JAT()
 % recog = [55, 1, 2, 3, 31:36, 66];
 
 % Location of the variant.xlsx
-excelLOC = 'C:\Users\Admin\Desktop\dataOut_AMC';
+excelLOC = 'C:\Users\johna\Dropbox\SfN_2022\dataOut_AMC';
 cd(excelLOC)
 varTable = readtable('variantLIST.xlsx');
 % Location of eye tracking folders [from Teams]
-mainLOC = 'C:\Users\Admin\Desktop\dataOut_AMC\dataOut_AMC\eyeTrack';
+mainLOC = 'C:\Users\johna\Dropbox\SfN_2022\dataOut_AMC\dataOut_AMC\eyeTrack';
 cd(mainLOC)
 [outFOLDS] = getfiles(mainLOC,1,nan);
 
@@ -138,7 +138,7 @@ for oi = 1:length(outFOLDS)
 
     % subject
     saveFname = ['eyeData_',outFOLDS{oi},'.mat'];
-    saveLOC = 'C:\Users\Admin\Desktop\dataOut_AMC\dataOut_AMC\eyeDATA';
+    saveLOC = 'C:\Users\johna\Dropbox\SfN_2022\dataOut_AMC\dataOut_AMC\eyeDATA';
     cd(saveLOC)
     save(saveFname,"variantS");
 
