@@ -12,6 +12,9 @@ switch pcname
     case 'DESKTOP-EGFQKAI'
         mainDIR = 'C:\Users\johna\Dropbox\SfN_2022\dataOut_AMC';
         dataDIR = [mainDIR, filesep , 'dataOut_AMC\eyeDATA'];
+    case 'DESKTOP-I5CPDO7'
+        mainDIR = 'D:\Dropbox\SfN_2022\dataOut_AMC';
+        dataDIR = [mainDIR, filesep , 'dataOut_AMC\eyeDATA'];
 end
 
 
