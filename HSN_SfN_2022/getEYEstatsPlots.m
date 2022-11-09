@@ -60,7 +60,7 @@ for mi = 1:length(matDIR2)
 
         newALL(totCount) = mean(eyeMData1Nm,'omitnan');
         oldALL(totCount) = mean(eyeMData1Om,'omitnan');
-        [~,pvalAll(totCount)] = ttest2(eyeMData1Om,eyeMData1Nm);
+        [~,pvalAll(totCount),~,stats] = ttest2(eyeMData1Om,eyeMData1Nm);
         totCount = totCount + 1;
 
     end
