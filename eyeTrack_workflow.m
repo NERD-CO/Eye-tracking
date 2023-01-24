@@ -5,10 +5,26 @@
     % Path example: C:\Users\darwinm\Documents\MATLAB\EyeTrack\variantLIST
 
 % STEP 3: Run Initial_EyeAnalysis_MLD_v2.m f(x)
-[] = Initial_EyeAnalysis_MLD_v2()
-    
+
+userPC = 'JAT';
+switch userPC
+    case 'JAT'
+        excelLOC = 'C:\Users\Admin\Documents\Github\Eye-tracking';
+        mainLOC = 'E:\Dropbox\SfN_2022\dataOut_AMC\dataOut_AMC\eyeTrack';
+        saveLOC = 'E:\Dropbox\SfN_2022\dataOut_AMC\dataOut_AMC\eyeDATA';
+    case 'MD'
+%         excelLOC = 'C:\Users\Admin\Documents\Github\Eye-tracking';
+%         mainLOC = 'E:\Dropbox\SfN_2022\dataOut_AMC\dataOut_AMC\eyeTrack';
+end
+
+Initial_EyeAnalysis_MLD_v2(excelLOC , mainLOC , saveLOC)
+
+
+%%
 % STEP 4: Run eyeTRACKproc.m f(x)  
-[] = eyeTRACKproc(mainPath);
+
+mainPath = saveLOC;
+eyeTRACKproc(mainPath);
 
 
 
