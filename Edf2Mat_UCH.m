@@ -5,7 +5,7 @@
 %      NOTE: Need to have this toolbox downloaded and on path 
 %
 % Inputs: 1) file to convert 2) Patient ID, 3) block (learning 'L' or recog 'R'), 
-% 4) variant ('1', '2', or '3')
+% 4) variant ('1', '2', or '3') 
 %
 % Output: File saved with patient ID, block type, and date of recording
 %
@@ -22,6 +22,7 @@ function [eyeProcName] = Edf2Mat_UCH(edfFile, patientID, block, variant, fileDIR
 % edfFile = 'NO20221615110.edf';
 % patientID = 'MW9';
 % block = 'L';
+% variant = 1
 % fileDIR = directory location ////// OPTIONAL!!
 
 if nargin < 5

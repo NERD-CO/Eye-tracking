@@ -24,6 +24,8 @@ mainLOC = 'C:\Users\darwinm\Documents\MATLAB\EyeTrack\eyeTrack';
 cd(mainLOC)
 [outFOLDS] = getfiles(mainLOC,1,nan);
 
+oi = 1;
+
 for oi = 1:length(outFOLDS)
 
     tempCASEd = [mainLOC , filesep , outFOLDS{oi}];
@@ -33,7 +35,7 @@ for oi = 1:length(outFOLDS)
 
     allvars = unique(idTab.Variant);
     variantS = struct;
-    for vi = 1:length(allvars)
+ for vi = 1:length(allvars)
         vartiTAB =  idTab(ismember(idTab.Variant,allvars(vi)),:);
         learnEDF = vartiTAB.EDF(matches(vartiTAB.Block,'learn'));
         recogEDF = vartiTAB.EDF(matches(vartiTAB.Block,'recog'));
