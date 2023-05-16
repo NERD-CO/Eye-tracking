@@ -17,7 +17,8 @@
 function [tsTable, picTable, fixTab, saccTab, rawTab] = ExtractEyeInfo_v2(eyeMatfile)
 
 
-load(eyeMatfile,'edfRAW');
+load(eyeMatfile,'edfRawStruct');
+edfRAW = edfRawStruct;
 
 % Picture and Timestamp Tables
 [tsTable , picTable] = createTStable(edfRAW);

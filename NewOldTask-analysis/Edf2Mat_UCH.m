@@ -18,7 +18,7 @@
 %
 % Marielle L. Darwin & John A. Thompson 
 
-function [eyeProcName] = Edf2Mat_UCH(edfFile, patientID, block, variant, fileDIR, saveDIR)
+function [eyeProcName] = Edf2Mat_UCH(basePath, edfFile, patientID, block, variant, fileDIR, saveDIR)
 % edfFile = 'NO20221615110.edf';
 % patientID = 'MW9';
 % block = 'L';
@@ -32,11 +32,13 @@ else
 end
 
 % Select folder for edf-converter
-if ~exist('Edf2Mat.m','file')
-    uiwait(msgbox('Navigate to and select edf-converter folder'))
-    edfLoc = uigetdir();
-    addpath(genpath(edfLoc));
-end
+% if ~exist('Edf2Mat.m','file')
+%     uiwait(msgbox('Navigate to and select edf-converter folder'))
+%     edfLoc = uigetdir();
+%     addpath(genpath(edfLoc));
+% end
+
+cd(append(basePath,'\edf-converter-master'));
 
 paths = [];
 % Set path structure
@@ -50,7 +52,7 @@ switch eyeDataDir
         paths.basePath = fileDIR;
         paths.savePath = saveDIR;
 end
-paths.path_edf = [strcat(paths.basePath,'\',edfFile)];
+paths.path_edf = [strcat(paths.basePath)];
 cd(paths.basePath);
 
 % Construct new file name
@@ -59,8 +61,18 @@ eyeRM = extractAfter(eyeSp(1),'NO');
 filename = [strcat('eyetrack_', patientID, '_', variant, '_', block, '_', eyeRM{1}, '.mat')];
 
 % Convert chosen .edf file to .mat file and save
-edfRAW = Edf2Mat(paths.path_edf);
+edfRAW = Edf2Mat(edfFile);
 cd(paths.savePath)
-save(filename,'edfRAW');
+
+% Convert edfRAW to struct
+edfRfnames = fieldnames(edfRAW);
+edfRfnames = edfRfnames(~matches(edfRfnames,'fails'));
+edfRawStruct = struct;
+for efr = 1:length(edfRfnames)
+    edfRawStruct.(edfRfnames{efr}) = edfRAW.(edfRfnames{efr});
+end
+
+
+save(filename,'edfRawStruct');
 eyeProcName = filename;
 end
