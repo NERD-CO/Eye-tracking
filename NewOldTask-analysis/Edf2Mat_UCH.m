@@ -18,7 +18,7 @@
 %
 % Marielle L. Darwin & John A. Thompson 
 
-function [eyeProcName] = Edf2Mat_UCH(basePath, edfFile, patientID, block, variant, fileDIR, saveDIR)
+function [eyeProcName] = Edf2Mat_UCH(edf2matLOC, edfFile, patientID, block, variant, fileDIR, saveDIR)
 % edfFile = 'NO20221615110.edf';
 % patientID = 'MW9';
 % block = 'L';
@@ -38,7 +38,7 @@ end
 %     addpath(genpath(edfLoc));
 % end
 
-cd(append(basePath,'\edf-converter-master'));
+cd(edf2matLOC);
 
 paths = [];
 % Set path structure

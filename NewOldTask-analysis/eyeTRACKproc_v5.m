@@ -178,7 +178,14 @@ locCpoints = cell(height(oldRAW),1);
 for tsI = 1:height(oldRAW)
 
     tmpTrace = oldRAW{tsI};
-    tmpIndex = tmpTrace < 110 | tmpTrace > 950;
+    tmpTUpth = mean(tmpTrace, 'omitnan') + (std(tmpTrace, 'omitnan')*2);
+    tmpTDpth = mean(tmpTrace, 'omitnan') - (std(tmpTrace, 'omitnan')*2);
+
+    tmpIndex = tmpTrace < tmpTDpth | tmpTrace > tmpTUpth; % FIGURE OUT UPPER LIMIT??????????
+
+    % plot(tmpTrace); yline(tmpTUpth); yline(tmpTDpth)
+    % pause 
+    % cla
 
     if sum(tmpIndex) == 0
         continue
@@ -405,7 +412,28 @@ end
 firstAllNAN = find(sum(isnan(nanMAT),1) == length(finalNEWot),1,'first');
 
 nanMATn = nanMAT(:,1:firstAllNAN);
-[corInds , ~ , ~] = computeASCI_eye(nanMATn);
+
+fracNAN = zeros(1,width(nanMATn));
+for ini = 1:width(nanMATn)
+
+    fracNAN(ini) = sum(isnan(nanMATn(:,ini)))/height(nanMATn);
+
+end
+
+columnTrim = find(fracNAN >= .80, 1, 'first');
+
+nanMATn2 = nanMATn(:,1:columnTrim);
+
+
+[corVals] = computeASCI_eye_v2(nanMATn2);
+% ccCUToff = quantile(corVals,0.12);
+if std(corVals,'omitnan') < 0.29
+    ccCUToff = mean(corVals,'omitnan') - (std(corVals,'omitnan')*1.65);
+else
+    ccCUToff = mean(corVals,'omitnan') - (std(corVals,'omitnan')*0.25);
+end
+corInds = corVals > ccCUToff;
+% corInds = corVals > 0.6;
 
 finalACSI = finalNEWot;
 finalACSI(~corInds) = {nan};
