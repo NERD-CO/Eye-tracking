@@ -342,7 +342,7 @@ end
 
 function [leftEYE , rightEYE , TTL_sInfo] = getEYErawEpoch(rawTIME , ttlTABLE , trialsOfInt)
 
-%%%%% NEW RAW will go from -250ms [from start] to +200ms [from end]
+%%%%% NEW RAW will go from -400ms [from start][total 500 ITI] to +200ms [from end]
 %%%%% NEW TABLE per trial: EVENT , TRIALnum , NLX_T [future] , EYELink_T
 %%% TABLE: TRIAL_Num , EVENT_ID , NLX_TTL , EYElink_TTL , EYElink_Int
 
@@ -373,14 +373,14 @@ for tttrialir = 1:length(trialsOfInt)
     tmpOtrTAB = ttlTABLE(ismember(ttlTABLE.TrialID, tmpOtr),:);
 
     % 500ms before first TS
-    startTS = tmpOtrTAB.timeStamp(tmpOtrTAB.TTLid == 1) - 250;
+    startTS = tmpOtrTAB.timeStamp(tmpOtrTAB.TTLid == 1) - 400;
     % 500ms after last TS
     endTS   = tmpOtrTAB.timeStamp(tmpOtrTAB.TTLid == 6) + 200;
 
     tmpTable = table;
     tmpTable.TrialNUM = repmat(tmpOtr,height(tmpOtrTAB) + 2,1);
     tmpTable.EventID = [nan ; tmpOtrTAB.TTLid ; nan];
-    tmpTable.EventDesc = {'m250ms' ; 'StimOn'; 'StimOff';'QuestionScr';...
+    tmpTable.EventDesc = {'m400ms' ; 'StimOn'; 'StimOff';'QuestionScr';...
         'Response';'DelayEnd';'p200ms'};
     tmpTable.NLXttl = zeros(height(tmpOtrTAB.TTLid) + 2,1,'int64');
     tmpTable.ELNKttl = [startTS ; tmpOtrTAB.timeStamp ; endTS];

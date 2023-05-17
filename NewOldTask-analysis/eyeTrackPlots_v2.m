@@ -57,7 +57,7 @@ switch plotNUM
                 tmpCatRaw = learnDATA(catROWSi3);
                 tmpCatTTL = learnTTL(catROWSi3);
 
-                sampleLEN_L = 1052; % % 800 ms + 300 ms + 2 ms
+                sampleLEN_L = 1402; % % 1000 ms + 400 ms + 2 ms
 
                 % CREATE Matrix average baseline
                 tmpCatMatBase = nan(height(tmpCatRaw),sampleLEN_L); % NEED TO CHECK
@@ -264,7 +264,7 @@ switch plotNUM
 
             catColorSrgb = oVnColorS/255;
 
-            sampleLEN_R = 1052;
+            sampleLEN_R = 1402;
 
             figure;
             tiledlayout(1,2)
@@ -296,10 +296,15 @@ switch plotNUM
                     meanBASE = mean(baseLINE,'omitnan');
 
                     ttlStartS = tmpNvOTTL{ti}.ELNKint(2);
-                    ttlStopS = ttlStartS + 800;
+                    ttlStopS = ttlStartS + 1000;
                     stIMUlus =  tmpNvORaw{ti}(ttlStartS:ttlStopS);
 
                     tmpNvOMatBase(ti,:) = ((([baseLINE , stIMUlus]) / meanBASE) * 100)-100;
+                    plot((([baseLINE , stIMUlus] / meanBASE)*100)-100,...
+                        'Color',catColorSrgb(ci,:),'LineWidth',0.5); 
+                    xline(401)
+                    hold on
+
                 end
 
                 %%%% BASELINE to SOME PERIOD AFTER STIM -
@@ -337,16 +342,16 @@ switch plotNUM
                 hold on
                 plot(xTICKS, blMEANS ,'Marker', 'o','MarkerFaceColor', catColorSrgb(ci,:),...
                     'Color',catColorSrgb(ci,:))
-                line([xTICKS ; xTICKS] , [blUstds ; blDstds],'Color',catColorSrgb(ci,:),...
+                line([xTICKS ; xTICKS] , [blUstds ; blDstds],'Color',[catColorSrgb(ci,:) 0.3],...
                     'LineWidth',0.75)
 
             end
             % legend(catIDs)
             xlim([1 sampleLEN_R])
 
-            xticks([1 251 451 651 851 1052])
-            xticklabels([-250 0 200 400 600 800])
-            xline(301,'-','Stimulus on','LabelVerticalAlignment','bottom')
+            xticks([1 401 601 801 1001 1201 1402])
+            xticklabels([-400 0 200 400 600 800 1000])
+            xline(401,'-','Stimulus on','LabelVerticalAlignment','bottom')
             xlabel('Time in ms')
             ylabel('Percent change from baseline')
 
@@ -374,7 +379,7 @@ switch plotNUM
 
                 % CREATE Matrix average baseline
                 tmpNvOMatBase = nan(height(tmpNvORaw),sampleLEN_R); % FIGURE OUT NEW LENGTH
-                tmpNvOonlyStim = nan(height(tmpNvORaw),801);
+                tmpNvOonlyStim = nan(height(tmpNvORaw),1001);
                 tmpNvOonlyStimMtrial = nan(height(tmpNvORaw),1);
                 for ti = 1:height(tmpNvOTTL)
                     ttlStartB = tmpNvOTTL{ti}.ELNKint(1);
@@ -383,12 +388,12 @@ switch plotNUM
                     meanBASE = mean(baseLINE,'omitnan');
 
                     ttlStartS = tmpNvOTTL{ti}.ELNKint(2);
-                    ttlStopS = ttlStartS + 800;
+                    ttlStopS = ttlStartS + 1000;
                     stIMUlus =  tmpNvORaw{ti}(ttlStartS:ttlStopS);
 
                     tmpNvOMatBase(ti,:) = ((([baseLINE , stIMUlus]) / meanBASE) * 100)-100;
 
-                    tmpNvOonlyStim(ti,:) = tmpNvOMatBase(ti,ttlStartS:ttlStartS+800);
+                    tmpNvOonlyStim(ti,:) = tmpNvOMatBase(ti,ttlStartS:ttlStartS+1000);
 
                     tmpNvOonlyStimMtrial(ti) = mean(tmpNvOonlyStim(ti,:),'omitnan');
                 end
