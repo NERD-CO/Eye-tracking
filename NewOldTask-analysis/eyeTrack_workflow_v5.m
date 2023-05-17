@@ -45,9 +45,9 @@ end
 % STEP 2: Change ptID to be specific to pt 
 % ptID = 'AMC_PY21NO05';
 % ptID = 'AMC_PY22NO09';
-ptID = 'AMC_PY22NO12';
+% ptID = 'AMC_PY22NO12';
 % ptID = 'AMC_PY22NO13';
-% ptID = 'AMC_PY22NO16';
+ptID = 'AMC_PY22NO16';
 
 %% STEP 3 CONVERT From EDF to MAT
 Extract_Eye_EDF(excelLocation , dataLocation, ptID, edf2matLOC)
