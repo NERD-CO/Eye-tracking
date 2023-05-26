@@ -57,11 +57,10 @@ switch plotNUM
                 tmpCatRaw = learnDATA(catROWSi3);
                 tmpCatTTL = learnTTL(catROWSi3);
 
-<<<<<<< Updated upstream
-                sampleLEN_L = 1402; % % 1000 ms + 400 ms + 2 ms
-=======
+                % sampleLEN_L = 1402; % % 1000 ms + 400 ms + 2 ms
+
                 sampleLEN_L = 1202; % % 800 ms + 300 ms + 2 ms
->>>>>>> Stashed changes
+
 
                 % CREATE Matrix average baseline
                 tmpCatMatBase = nan(height(tmpCatRaw),sampleLEN_L); % NEED TO CHECK
@@ -305,7 +304,7 @@ switch plotNUM
 
                     tmpNvOMatBase(ti,:) = ((([baseLINE , stIMUlus]) / meanBASE) * 100)-100;
                     plot((([baseLINE , stIMUlus] / meanBASE)*100)-100,...
-                        'Color',catColorSrgb(ci,:),'LineWidth',0.5); 
+                        'Color',[catColorSrgb(ci,:) 0.2],'LineWidth',0.5); 
                     xline(401)
                     hold on
 

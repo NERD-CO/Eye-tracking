@@ -2,7 +2,7 @@
 
 % STEP 1: Change path directories. Choose the NAS case but update the paths
 % the first time you use it to make sure they are correct.
-userPC = 'JAT_WORK';
+userPC = 'JAT_HOME';
 switch userPC
     case 'JAT_HOME'
         codeLocation = 'C:\Users\Admin\Documents\Github\Eye-tracking\NewOldTask-analysis';
@@ -50,13 +50,8 @@ end
 
 % STEP 2: Change ptID to be specific to pt 
 % ptID = 'AMC_PY21NO05';
-<<<<<<< Updated upstream
-ptID = 'AMC_PY22NO09';
-% ptID = 'AMC_PY22NO12';
-=======
 % ptID = 'AMC_PY22NO09';
 ptID = 'AMC_PY22NO12';
->>>>>>> Stashed changes
 % ptID = 'AMC_PY22NO13';
 % ptID = 'AMC_PY22NO16';
 
