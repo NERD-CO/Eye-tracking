@@ -49,9 +49,9 @@ switch userPC
 end
 
 % STEP 2: Change ptID to be specific to pt 
-% ptID = 'AMC_PY21NO05';
+ptID = 'AMC_PY21NO05';
 % ptID = 'AMC_PY22NO09';
-ptID = 'AMC_PY22NO12';
+% ptID = 'AMC_PY22NO12';
 % ptID = 'AMC_PY22NO13';
 % ptID = 'AMC_PY22NO16';
 
