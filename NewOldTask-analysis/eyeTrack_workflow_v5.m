@@ -8,9 +8,15 @@ switch userPC
         codeLocation = 'C:\Users\Admin\Documents\Github\Eye-tracking\NewOldTask-analysis';
         edf2matLOC = 'C:\Users\Admin\Documents\Github\Eye-tracking\edf-converter-master';
         edfCheck = which('Edf2Mat.m');
+        boundLOC = 'C:\Users\Admin\Documents\Github\Eye-tracking\boundedLINE';
+        cbrewLOC = 'C:\Users\Admin\Documents\Github\Eye-tracking\cbrewerALL';
         if isempty(edfCheck)
             addpath(genpath(edf2matLOC));
         end
+
+        addpath(genpath(boundLOC))
+        addpath(genpath(cbrewLOC))
+
         addpath(codeLocation)
         excelLocation = 'C:\Users\Admin\Documents\Github\Eye-tracking\NewOldTask-analysis';
         dataLocation = 'E:\Dropbox\Publications_Meta\InProgress\Eye-tracking-MD-memory\Code_test\EyeTrack\eyeTrack';
@@ -73,6 +79,7 @@ eyeQUALITY_PS(saveCleanLocation, ptID);
 
 %% STEP 6 - Create stats matrices
 
+eyeTrack_StatPrep_v1(saveCleanLocation, excelLocation, ptID , 'learn' , NaN)
 
 
 
