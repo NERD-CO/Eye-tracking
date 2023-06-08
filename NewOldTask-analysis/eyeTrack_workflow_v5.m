@@ -2,7 +2,7 @@
 
 % STEP 1: Change path directories. Choose the NAS case but update the paths
 % the first time you use it to make sure they are correct.
-userPC = 'JAT_HOME';
+userPC = 'JAT_WORK';
 switch userPC
     case 'JAT_HOME'
         codeLocation = 'C:\Users\Admin\Documents\Github\Eye-tracking\NewOldTask-analysis';
