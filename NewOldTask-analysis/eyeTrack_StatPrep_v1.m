@@ -66,7 +66,7 @@ end
 
 %%%%% CREATE Variable length table/struct to output trial pupil info based
 %%%%% on selections above
-
+%%%%% AM HERE 6/7/2023
 
 for ci = 1:length(catIDs)
 
