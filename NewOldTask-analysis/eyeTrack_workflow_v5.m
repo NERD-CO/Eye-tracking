@@ -61,8 +61,8 @@ switch userPC
 end
 
 % STEP 2: Change ptID to be specific to pt 
-ptID = 'AMC_PY21NO05';
-% ptID = 'AMC_PY22NO09';
+% ptID = 'AMC_PY21NO05';
+ptID = 'AMC_PY22NO09';
 % ptID = 'AMC_PY22NO12';
 % ptID = 'AMC_PY22NO13';
 % ptID = 'AMC_PY22NO16';
@@ -76,6 +76,12 @@ clc
 %% STEP 5 Run eyeTrackProc funciton
 % STEP 5: Run eyeTRACKproc.m f(x) 
 eyeTRACKproc_v5(saveCleanLocation, savePreProcLocation, ptID);
+
+% ADD PUPIL LOCATION EXTRACT
+% ADD GAZE EXTRACT
+% ADD SACCADE EXTRACT
+
+
 clc
 %% STEP 5a - plot quality check
 
@@ -85,7 +91,8 @@ eyeQUALITY_PS(saveCleanLocation, ptID);
 
 %% STEP 6 - Create stats matrices
 
-eyeTrack_StatPrep_v1(saveCleanLocation, excelLocation, ptID , 'learn' , 1)
+% INPUTS: (cleanedDataLOC, exclLOC, ptID ,conditiON, subStep)
+statSummary = eyeTrack_StatPrep_v1(saveCleanLocation, excelLocation, ptID , 'learn' , 1);
 
 
 

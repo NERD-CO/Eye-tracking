@@ -1,4 +1,4 @@
-function [allVariants] = eyeTrack_StatPrep_v1(cleanedDataLOC, exclLOC, ptID ,conditiON, subStep)
+function [] = eyeTrack_StatPrep_v1(cleanedDataLOC, exclLOC, ptID ,conditiON, subStep)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -74,14 +74,15 @@ switch conditiON
 
     case 'recog'
 
-%%%%% CREATE RECOG comparisons - CHECK REMARKABLE - 
-%%%%% AM HERE 6/15/2023
+
 
 
 end
 
 
-
+%%%%% CREATE Variable length table/struct to output trial pupil info based
+%%%%% on selections above
+%%%%% AM HERE 6/7/2023
 
 
 switch conditiON
@@ -110,23 +111,19 @@ switch conditiON
                     tbl_condition.("Group A") = gnames_condition(tbl_condition.("Group A"));
                     tbl_condition.("Group B") = gnames_condition(tbl_condition.("Group B"));
 
-                    tbl_epoch = array2table(results_epoch,"VariableNames", ...
+                    tbl_epoch = array2table(results_condition,"VariableNames", ...
                         ["Group A","Group B","Lower Limit","A-B","Upper Limit","P-value"]);
-                    tbl_epoch.("Group A") = gnames_epoch(tbl_epoch.("Group A"));
-                    tbl_epoch.("Group B") = gnames_epoch(tbl_epoch.("Group B"));
+                    tbl_epoch.("Group A") = gnames_condition(tbl_epoch.("Group A"));
+                    tbl_epoch.("Group B") = gnames_condition(tbl_epoch.("Group B"));
 
                     % Create stat table
                     anovaSTAT_condition = cell2table(sumStats_condition(2:4,:),...
                         'VariableNames',sumStats_condition(1,:));
 
-                    anovaSTAT_epoch = cell2table(sumStats_epcoh(2:4,:),...
-                        'VariableNames',sumStats_epcoh(1,:));
 
-                    allVariants.(variNUM{vi}).Condition.Posthoc = tbl_condition;
-                    allVariants.(variNUM{vi}).Condition.Anova = anovaSTAT_condition;
 
-                    allVariants.(variNUM{vi}).Epoch.Posthoc = tbl_epoch;
-                    allVariants.(variNUM{vi}).Epoch.Anova = anovaSTAT_epoch;
+
+
 
                 end
 
