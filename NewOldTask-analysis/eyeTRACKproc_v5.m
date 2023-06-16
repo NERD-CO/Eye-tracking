@@ -371,6 +371,7 @@ for buIi = 1:length(dernewRAW)
 
     allnanCheck = sum(isnan(tmpNEWt))/numel(tmpNEWt);
     if allnanCheck > 0.85
+        fourHzbutter{buIi} = transpose(tmpNEWt);
         continue
     end
 

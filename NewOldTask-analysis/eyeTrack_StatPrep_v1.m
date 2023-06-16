@@ -16,7 +16,7 @@ switch conditiON
 
     % '21' = YES or '20' = NO
     case 'learn'
-        
+
         variNUM = fieldnames(variantS);
         allVariants = struct;
         for vi = 1:length(variNUM)
@@ -61,11 +61,11 @@ switch conditiON
             variNum = variNUM{vi};
             inData = learnDATA;
             trialGroupIDs = {'Subject_Yes_Correct','Subject_No_Correct',...
-                'Subject_Yes_Incorrect','Subject_No_Incorrect'}; 
+                'Subject_Yes_Incorrect','Subject_No_Incorrect'};
             trialGroupInds = [subYes_correct , subNo_correct ,...
                 subYes_incorrect , subNo_incorrect];
 
-            
+
             [statsOutput] = getStatsTable(variNum , inData , learnTTL ,...
                 trialGroupIDs, trialGroupInds);
             allVariants.(variNUM{vi}) = statsOutput;
@@ -74,8 +74,124 @@ switch conditiON
 
     case 'recog'
 
-%%%%% CREATE RECOG comparisons - CHECK REMARKABLE - 
-%%%%% AM HERE 6/15/2023
+        %%%%% CREATE RECOG comparisons - CHECK REMARKABLE -
+        %%%%% AM HERE 6/15/2023
+        variNUM = fieldnames(variantS);
+        allVariants = struct;
+        for vi = 1:length(variNUM)
+
+            varPtInfoRecog = ptTABLE(matches(ptTABLE.Block,'recog') &...
+                ismember(ptTABLE.Variant,str2double(variNUM{vi}(end))),:);
+
+            varDATA = variantS.(variNUM{vi}).dataTable;
+
+            if matches(varPtInfoRecog.Eye2Use{1},'Left')
+                RecogDATA = varDATA.Left_R_oT_pupilS_rawCL;
+            else
+                RecogDATA = varDATA.Right_R_oT_pupilS_rawCL;
+            end
+
+            RecogTTL = varDATA.RecogTTLplus;
+            RecogResp = varDATA.RecogResp;
+            RecogGT = varDATA.groundTruth;
+
+            switch subStep
+                case 1
+                    subNewY1_cor = RecogResp == 31 & RecogGT;
+                    subNewY2_cor = RecogResp == 32 & RecogGT;
+                    subNewY3_cor = RecogResp == 33 & RecogGT;
+                    subNewN4_cor = RecogResp == 34 & ~RecogGT;
+                    subNewN5_cor = RecogResp == 35 & ~RecogGT;
+                    subNewN6_cor = RecogResp == 36 & ~RecogGT;
+                    subNewY1_ncr = RecogResp == 31 & ~RecogGT;
+                    subNewY2_ncr = RecogResp == 32 & ~RecogGT;
+                    subNewY3_ncr = RecogResp == 33 & ~RecogGT;
+                    subNewN4_ncr = RecogResp == 34 & RecogGT;
+                    subNewN5_ncr = RecogResp == 35 & RecogGT;
+                    subNewN6_ncr = RecogResp == 36 & RecogGT;
+
+                    variNum = variNUM{vi};
+                    inData = RecogDATA;
+                    trialGroupIDs = {'Subject_Y1_cor','Subject_Y2_cor',...
+                        'Subject_Y3_cor','Subject_N4_cor','Subject_N5_cor',...
+                        'Subject_N6_cor','Subject_Y1_ncr','Subject_Y2_ncr',...
+                        'Subject_Y3_ncr','Subject_N4_ncr','Subject_N5_ncr'...
+                        'Subject_N6_ncr'};
+                    trialGroupInds = [subNewY1_cor , subNewY2_cor , subNewY3_cor,...
+                        subNewN4_cor , subNewN5_cor , subNewN6_cor , subNewY1_ncr,...
+                        subNewY2_ncr , subNewY3_ncr , subNewN4_ncr , subNewN5_ncr,...
+                        subNewN6_ncr];
+
+                    [statsOutput] = getStatsTable(variNum , inData , RecogTTL ,...
+                        trialGroupIDs, trialGroupInds);
+                    allVariants.(variNUM{vi}) = statsOutput;
+
+                case 2
+                    subNewYa_cor = ismember(RecogResp, 31:33) & RecogGT;
+                    subNewNa_cor = ismember(RecogResp, 34:36) & ~RecogGT;
+                    subNewYa_ncr = ismember(RecogResp, 31:33) & ~RecogGT;
+                    subNewNa_ncr = ismember(RecogResp, 34:36) & RecogGT;
+
+                    variNum = variNUM{vi};
+                    inData = RecogDATA;
+                    trialGroupIDs = {'Subject_YA_cor','Subject_NA_cor',...
+                        'Subject_YA_ncr','Subject_NA_ncr'};
+                    trialGroupInds = [subNewYa_cor , subNewNa_cor , subNewYa_ncr,...
+                        subNewNa_ncr];
+
+                    [statsOutput] = getStatsTable(variNum , inData , RecogTTL ,...
+                        trialGroupIDs, trialGroupInds);
+                    allVariants.(variNUM{vi}) = statsOutput;
+
+                case 3
+                    subNewYa2_cor = ismember(RecogResp, 31:32) & RecogGT;
+                    subNewNa2_cor = ismember(RecogResp, 35:36) & ~RecogGT;
+                    subNewUa2_cor = (ismember(RecogResp, 33) & RecogGT) |...
+                        (ismember(RecogResp, 34) & ~RecogGT);
+                    subNewYa2_ncr = ismember(RecogResp, 31:32) & ~RecogGT;
+                    subNewNa2_ncr = ismember(RecogResp, 35:36) & RecogGT;
+                    subNewUa2_ncr = (ismember(RecogResp, 33) & ~RecogGT) |...
+                        (ismember(RecogResp, 34) & RecogGT);
+
+                    variNum = variNUM{vi};
+                    inData = RecogDATA;
+                    trialGroupIDs = {'Subject_Y2_cor','Subject_N2_cor',...
+                        'Subject_U2_cor','Subject_Y2_ncr','Subject_N2_ncr'...
+                        'Subject_U2_ncr'};
+                    trialGroupInds = [subNewYa2_cor , subNewNa2_cor , subNewUa2_cor,...
+                        subNewYa2_ncr , subNewNa2_ncr , subNewUa2_ncr];
+
+                    [statsOutput] = getStatsTable(variNum , inData , RecogTTL ,...
+                        trialGroupIDs, trialGroupInds);
+                    allVariants.(variNUM{vi}) = statsOutput;
+
+                case 4
+                    subNewYa1_cor = ismember(RecogResp, 31) & RecogGT;
+                    subNewNa1_cor = ismember(RecogResp, 36) & ~RecogGT;
+                    subNewMa1_cor = (ismember(RecogResp, 32:33) & RecogGT) |...
+                        (ismember(RecogResp, 34:35) & ~RecogGT);
+                    subNewYa1_ncr = ismember(RecogResp, 31) & ~RecogGT;
+                    subNewNa1_ncr = ismember(RecogResp, 36) & RecogGT;
+                    subNewMa1_ncr = (ismember(RecogResp, 32:33) & ~RecogGT) |...
+                        (ismember(RecogResp, 34:35) & RecogGT);
+
+                    variNum = variNUM{vi};
+                    inData = RecogDATA;
+                    trialGroupIDs = {'Subject_Y1_cor','Subject_N1_cor',...
+                        'Subject_M1_cor','Subject_Y1_ncr','Subject_N1_ncr'...
+                        'Subject_M1_ncr'};
+                    trialGroupInds = [subNewYa1_cor , subNewNa1_cor , subNewMa1_cor,...
+                        subNewYa1_ncr , subNewNa1_ncr , subNewMa1_ncr];
+
+                    [statsOutput] = getStatsTable(variNum , inData , RecogTTL ,...
+                        trialGroupIDs, trialGroupInds);
+                    allVariants.(variNUM{vi}) = statsOutput;
+
+
+            end
+
+
+        end
 
 
 end
@@ -88,54 +204,84 @@ switch conditiON
 
     case 'learn'
 
-        switch subStep
+        for vi = 1:length(variNUM)
 
-            case 1
+            ydata = allVariants.(variNUM{vi}).StatTable.PupilSize;
+            condition2u = allVariants.(variNUM{vi}).StatTable.GroupID;
+            epoch2u = allVariants.(variNUM{vi}).StatTable.EpochID;
 
-                for vi = 1:length(variNUM)
+            [~,sumStats_condition,stats_condition] = anova1(ydata,condition2u,"off");
+            [~,sumStats_epcoh,stats_epoch] = anova1(ydata,epoch2u,"off");
 
-                    ydata = allVariants.(variNUM{vi}).StatTable.PupilSize;
-                    condition2u = allVariants.(variNUM{vi}).StatTable.GroupID;
-                    epoch2u = allVariants.(variNUM{vi}).StatTable.EpochID;
+            [results_condition,~,~,gnames_condition] = multcompare(stats_condition);
+            [results_epoch,~,~,gnames_epoch] = multcompare(stats_epoch);
 
-                    [~,sumStats_condition,stats_condition] = anova1(ydata,condition2u,"off");
-                    [~,sumStats_epcoh,stats_epoch] = anova1(ydata,epoch2u,"off");
+            % Create Table
+            tbl_condition = array2table(results_condition,"VariableNames", ...
+                ["Group A","Group B","Lower Limit","A-B","Upper Limit","P-value"]);
+            tbl_condition.("Group A") = gnames_condition(tbl_condition.("Group A"));
+            tbl_condition.("Group B") = gnames_condition(tbl_condition.("Group B"));
 
-                    [results_condition,~,~,gnames_condition] = multcompare(stats_condition);
-                    [results_epoch,~,~,gnames_epoch] = multcompare(stats_epoch);
+            tbl_epoch = array2table(results_epoch,"VariableNames", ...
+                ["Group A","Group B","Lower Limit","A-B","Upper Limit","P-value"]);
+            tbl_epoch.("Group A") = gnames_epoch(tbl_epoch.("Group A"));
+            tbl_epoch.("Group B") = gnames_epoch(tbl_epoch.("Group B"));
 
-                    % Create Table
-                    tbl_condition = array2table(results_condition,"VariableNames", ...
-                        ["Group A","Group B","Lower Limit","A-B","Upper Limit","P-value"]);
-                    tbl_condition.("Group A") = gnames_condition(tbl_condition.("Group A"));
-                    tbl_condition.("Group B") = gnames_condition(tbl_condition.("Group B"));
+            % Create stat table
+            anovaSTAT_condition = cell2table(sumStats_condition(2:4,:),...
+                'VariableNames',sumStats_condition(1,:));
 
-                    tbl_epoch = array2table(results_epoch,"VariableNames", ...
-                        ["Group A","Group B","Lower Limit","A-B","Upper Limit","P-value"]);
-                    tbl_epoch.("Group A") = gnames_epoch(tbl_epoch.("Group A"));
-                    tbl_epoch.("Group B") = gnames_epoch(tbl_epoch.("Group B"));
+            anovaSTAT_epoch = cell2table(sumStats_epcoh(2:4,:),...
+                'VariableNames',sumStats_epcoh(1,:));
 
-                    % Create stat table
-                    anovaSTAT_condition = cell2table(sumStats_condition(2:4,:),...
-                        'VariableNames',sumStats_condition(1,:));
+            allVariants.(variNUM{vi}).Condition.Posthoc = tbl_condition;
+            allVariants.(variNUM{vi}).Condition.Anova = anovaSTAT_condition;
 
-                    anovaSTAT_epoch = cell2table(sumStats_epcoh(2:4,:),...
-                        'VariableNames',sumStats_epcoh(1,:));
-
-                    allVariants.(variNUM{vi}).Condition.Posthoc = tbl_condition;
-                    allVariants.(variNUM{vi}).Condition.Anova = anovaSTAT_condition;
-
-                    allVariants.(variNUM{vi}).Epoch.Posthoc = tbl_epoch;
-                    allVariants.(variNUM{vi}).Epoch.Anova = anovaSTAT_epoch;
-
-                end
-
-            case 2
+            allVariants.(variNUM{vi}).Epoch.Posthoc = tbl_epoch;
+            allVariants.(variNUM{vi}).Epoch.Anova = anovaSTAT_epoch;
 
         end
 
-
     case 'recog'
+
+
+        for vi = 1:length(variNUM)
+
+            ydata = allVariants.(variNUM{vi}).StatTable.PupilSize;
+            condition2u = allVariants.(variNUM{vi}).StatTable.GroupID;
+            epoch2u = allVariants.(variNUM{vi}).StatTable.EpochID;
+
+            [~,sumStats_condition,stats_condition] = anova1(ydata,condition2u,"off");
+            [~,sumStats_epcoh,stats_epoch] = anova1(ydata,epoch2u,"off");
+
+            [results_condition,~,~,gnames_condition] = multcompare(stats_condition,"Display","off");
+            [results_epoch,~,~,gnames_epoch] = multcompare(stats_epoch,"Display","off");
+
+            % Create Table
+            tbl_condition = array2table(results_condition,"VariableNames", ...
+                ["Group A","Group B","Lower Limit","A-B","Upper Limit","P-value"]);
+            tbl_condition.("Group A") = gnames_condition(tbl_condition.("Group A"));
+            tbl_condition.("Group B") = gnames_condition(tbl_condition.("Group B"));
+
+            tbl_epoch = array2table(results_epoch,"VariableNames", ...
+                ["Group A","Group B","Lower Limit","A-B","Upper Limit","P-value"]);
+            tbl_epoch.("Group A") = gnames_epoch(tbl_epoch.("Group A"));
+            tbl_epoch.("Group B") = gnames_epoch(tbl_epoch.("Group B"));
+
+            % Create stat table
+            anovaSTAT_condition = cell2table(sumStats_condition(2:4,:),...
+                'VariableNames',sumStats_condition(1,:));
+
+            anovaSTAT_epoch = cell2table(sumStats_epcoh(2:4,:),...
+                'VariableNames',sumStats_epcoh(1,:));
+
+            allVariants.(variNUM{vi}).Condition.Posthoc = tbl_condition;
+            allVariants.(variNUM{vi}).Condition.Anova = anovaSTAT_condition;
+
+            allVariants.(variNUM{vi}).Epoch.Posthoc = tbl_epoch;
+            allVariants.(variNUM{vi}).Epoch.Anova = anovaSTAT_epoch;
+
+        end
 
 
 
@@ -211,7 +357,7 @@ for ci = 1:length(trialGroupIDS)
         end
     end
 
-    % Leave RAW Alone 
+    % Leave RAW Alone
     % Create normalized by baseline
     tmpCatMatNormB = cell(1,4); % Epochs
     for trialI = 1:sum(catROWSi3)
@@ -226,7 +372,7 @@ for ci = 1:length(trialGroupIDS)
 
     statsOutput.RawMat{ci} = tmpCatMatRaw;
     statsOutput.NormMat{ci} = tmpCatMatNormB;
-    
+
     for sst = 1:width(tmpCatMatNormB)
 
         groupAll(aCount) = ci;
@@ -242,7 +388,7 @@ end
 % Remove nans from summary table
 remINDEXs = find(groupAll == -1000, 1, 'first');
 sumArray = [groupAll(1:remINDEXs-1) , epochAll(1:remINDEXs-1) ,...
-             meanAll(1:remINDEXs-1) , sdAll(1:remINDEXs-1)];
+    meanAll(1:remINDEXs-1) , sdAll(1:remINDEXs-1)];
 % Create summary table
 summTable = array2table(sumArray,'VariableNames',{'Group','Epoch','Mean','SD'});
 

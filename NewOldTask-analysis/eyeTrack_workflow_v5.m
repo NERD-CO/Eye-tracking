@@ -75,8 +75,9 @@ EyeAnalysis_DataExtract_v2(excelLocation, dataLocation, ptID, savePreProcLocatio
 clc
 %% STEP 5 Run eyeTrackProc funciton
 % STEP 5: Run eyeTRACKproc.m f(x) 
-eyeTRACKproc_v5(saveCleanLocation, savePreProcLocation, ptID);
-
+eyeTRACKproc_PupilSize(saveCleanLocation, savePreProcLocation, ptID);
+%%
+eyeTRACKproc_PupilLocation(saveCleanLocation, savePreProcLocation, ptID);
 % ADD PUPIL LOCATION EXTRACT
 % ADD GAZE EXTRACT
 % ADD SACCADE EXTRACT
@@ -89,12 +90,18 @@ eyeQUALITY_PS(saveCleanLocation, ptID);
 
 % CHOOSE ONE EYE PER CONDITION - ADD to EXCEL FILE
 
-%% STEP 6 - Create stats matrices
+%% STEP 6a - Create stats matrices Learn
 
 % INPUTS: (cleanedDataLOC, exclLOC, ptID ,conditiON, subStep)
-statSummary = eyeTrack_StatPrep_v1(saveCleanLocation, excelLocation, ptID , 'learn' , 1);
+statSummaryL = eyeTrack_StatPrep_v1(saveCleanLocation, excelLocation, ptID , 'learn' , 1);
 
+%% STEP 6b - Create stats matrices recog 1
 
+% INPUTS: (cleanedDataLOC, exclLOC, ptID ,conditiON, subStep)
+statSummaryR1 = eyeTrack_StatPrep_v1(saveCleanLocation, excelLocation, ptID , 'recog' , 1);
+statSummaryR2 = eyeTrack_StatPrep_v1(saveCleanLocation, excelLocation, ptID , 'recog' , 2);
+statSummaryR3 = eyeTrack_StatPrep_v1(saveCleanLocation, excelLocation, ptID , 'recog' , 3);
+statSummaryR4 = eyeTrack_StatPrep_v1(saveCleanLocation, excelLocation, ptID , 'recog' , 4);
 
 %% STEP 7a - plot data - Learning block - single subject
 eyeTrackPlots_v2(saveCleanLocation, excelLocation, ptID , 1)
