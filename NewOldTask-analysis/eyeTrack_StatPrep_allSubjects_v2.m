@@ -1,4 +1,4 @@
-function [allVariants] = eyeTrack_StatPrep_allSubjects_v1(cleanedDataLOC, exclLOC,conditiON, subStep)
+function [allVariants] = eyeTrack_StatPrep_allSubjects_v2(cleanedDataLOC, exclLOC,conditiON, subStep)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
