@@ -2,7 +2,7 @@
 
 % STEP 1: Change path directories. Choose the NAS case but update the paths
 % the first time you use it to make sure they are correct.
-userPC = 'JAT_HOME';
+userPC = 'MLD';
 switch userPC
     case 'JAT_HOME'
         codeLocation = 'C:\Users\Admin\Documents\Github\Eye-tracking\NewOldTask-analysis';
@@ -41,17 +41,30 @@ switch userPC
         savePreProcLocation = [dataLocation , filesep , 'eyeDATA'];
         saveCleanLocation = [savePreProcLocation , filesep , 'cleaned_eyeDATA'];
     case 'MLD'
-        % basePath = 'C:\Users\Admin\Documents\Github\Eye-tracking\NewOldTask-analysis';
-        % excelLOC = basePath;
-        % mainLOC = [excelLOC, '\eyeTrack'];
-        % saveLOC = [mainLOC, '\eyeDATA'];
-        % cleanedDataLOC = [saveLOC, '\cleaned_eyeDATA'];
+        codeLocation = 'C:\Users\darwinm\Documents\MATLAB\EyeTrack';
+        edf2matLOC = 'C:\Users\darwinm\Documents\Github\edf-converter-master';
+        edfCheck = which('Edf2Mat.m');
+        boundLOC = 'C:\Users\darwinm\Documents\MATLAB\EyeTrack\boundedLINE';
+        cbrewLOC = 'C:\Users\darwinm\Documents\MATLAB\EyeTrack\cbrewerALL';
+        if isempty(edfCheck)
+            addpath(genpath(edf2matLOC));
+        end
+
+        addpath(genpath(boundLOC))
+        addpath(genpath(cbrewLOC))
+
+        addpath(codeLocation)
+        excelLocation = 'C:\Users\darwinm\Documents\MATLAB\EyeTrack';
+        dataLocation = 'C:\Users\darwinm\Documents\MATLAB\EyeTrack\eyeTrack';
+        savePreProcLocation = [dataLocation , filesep , 'eyeDATA'];
+        saveCleanLocation = [savePreProcLocation , filesep , 'cleaned_eyeDATA'];
+        
     case 'NAS'
-        % basePath = 'C:\Users\Admin\Documents\Github\Eye-tracking\NewOldTask-analysis';
-        % excelLOC = basePath;
-        % mainLOC = [excelLOC, '\eyeTrack'];
-        % saveLOC = [mainLOC, '\eyeDATA'];
-        % cleanedDataLOC = [saveLOC, '\cleaned_eyeDATA'];
+%         basePath = 'C:\Users\darwinm\Documents\MATLAB\EyeTrack';
+%         excelLOC = basePath;
+%         mainLOC = [excelLOC, '\eyeTrack'];
+%         saveLOC = [mainLOC, '\eyeDATA'];
+%         cleanedDataLOC = [saveLOC, '\cleaned_eyeDATA'];
     case 'MLD_test'
         % basePath = 'C:\Users\Admin\Documents\Github\Eye-tracking\NewOldTask-analysis';
         % excelLOC = basePath;
@@ -61,11 +74,11 @@ switch userPC
 end
 
 % STEP 2: Change ptID to be specific to pt 
-% ptID = 'AMC_PY21NO05';
+ ptID = 'AMC_PY21NO05';
 % ptID = 'AMC_PY22NO09';
 % ptID = 'AMC_PY22NO12';
 % ptID = 'AMC_PY22NO13';
-ptID = 'AMC_PY22NO16';
+% ptID = 'AMC_PY22NO16';
 
 %% STEP 3 CONVERT From EDF to MAT
 Extract_Eye_EDF(excelLocation , dataLocation, ptID, edf2matLOC)
@@ -77,13 +90,13 @@ clc
 % STEP 5: Run eyeTRACKproc.m f(x) 
 eyeTRACKproc_PupilSize(saveCleanLocation, savePreProcLocation, ptID);
 %%
-eyeTRACKproc_PupilLocation(saveCleanLocation, savePreProcLocation, ptID);
+%eyeTRACKproc_PupilLocation(saveCleanLocation, savePreProcLocation, ptID);
 % ADD PUPIL LOCATION EXTRACT
 % ADD GAZE EXTRACT
 % ADD SACCADE EXTRACT
 
 
-clc
+%clc
 %% STEP 5a - plot quality check
 
 eyeQUALITY_PS(saveCleanLocation, ptID);
@@ -103,8 +116,24 @@ statSummaryR2 = eyeTrack_StatPrep_v1(saveCleanLocation, excelLocation, ptID , 'r
 statSummaryR3 = eyeTrack_StatPrep_v1(saveCleanLocation, excelLocation, ptID , 'recog' , 3);
 statSummaryR4 = eyeTrack_StatPrep_v1(saveCleanLocation, excelLocation, ptID , 'recog' , 4);
 
+%% STEP 6c
+[groupStatsL_1] = eyeTrack_StatPrep_allSubjects_v3(saveCleanLocation, 'learn', 1); % Only 1 condition
+[groupStatsR_1] = eyeTrack_StatPrep_allSubjects_v3(saveCleanLocation, 'recog', 1);
+[groupStatsR_2] = eyeTrack_StatPrep_allSubjects_v3(saveCleanLocation, 'recog', 2);
+[groupStatsR_3] = eyeTrack_StatPrep_allSubjects_v3(saveCleanLocation, 'recog', 3);
+[groupStatsR_4] = eyeTrack_StatPrep_allSubjects_v3(saveCleanLocation, 'recog', 4);
+
+cd(dataLocation);
+save('finalStat_GroupData.mat', 'groupStatsL_1','groupStatsR_1', 'groupStatsR_2',...
+    'groupStatsR_3','groupStatsR_4') %continue with all
+
+
+
+%copy and paste 120 5x change output "groupstats_Learning",
+%"groupStats_Recog_case1" to get unique mat file for each test/run throguh
+
 %% STEP 7a - plot data - Learning block - single subject
-eyeTrackPlots_v2(saveCleanLocation, excelLocation, ptID , 1)
+eyeTrackPlots_v3(saveCleanLocation, excelLocation, ptID , 1)
 
 % STEP 6: Figures - line plot of pupil diameter for confidence ratings
 % fig = pupil_confRatings(cleanedDataLOC, ptID);
