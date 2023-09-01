@@ -1,4 +1,4 @@
-% ---function NewOldTxttoMat---
+function[behavFILE]=NewOldTxttoMat_v2(textloc,patientID,vi,block, tempCASEd)
 % Convert .txt file from behavioral session into .mat file
 % Outputs table to view TTL values and timestamps
 %
@@ -19,7 +19,6 @@
 % 'NS'=no, sure; 'NLS'=no, less sure; 'NVU'=no, very unsure
 % 'YS'=yes, sure; 'YLS'=yes, less sure; 'YVU'=yes, very unsure
 
-function[behavFILE]=NewOldTxttoMat_v2(textloc,patientID,vi,block, tempCASEd)
 
 % Load text block by reading in every line of .txt file
 inputFile=fopen(textloc);       % Open file in Matlab
