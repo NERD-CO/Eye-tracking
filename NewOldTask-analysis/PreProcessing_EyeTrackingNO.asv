@@ -1,5 +1,5 @@
-%% SETUP code for NewOld delay preprocessing
-
+function [] = runSETUP_NewOldDelay(stage2run)
+% SETUP code for NewOld delay preprocessing
 % First run NewOldTxttoMat_v2.mat
 
 curPC = getenv('COMPUTERNAME');
@@ -7,24 +7,22 @@ curPC = getenv('COMPUTERNAME');
 switch curPC
     case 'DESKTOP-I5CPDO7'   % JAT WORK desktop
 
-
         excelLOC = 'Z:\MW_JAT_Backup\EyeTrack_Manuscript';
         DATADIR = 'Z:\MW_JAT_Backup\EyeTrack_Manuscript\Patient_folders';
 
         matNWBloc = 'C:\Users\Admin\Documents\MATLAB\matnwb-2.5.0.0';
         addpath(genpath(matNWBloc));
 
-
-
     case 'otherwise'
-
 
 
 end
 
 
+switch stage2run
+    cas
 
-%% PROCESS BEHAVIORAL FILES
+% PROCESS BEHAVIORAL FILES
 
 cd(excelLOC)
 % Load in excel file
@@ -58,9 +56,7 @@ end
 
 % Load in RAW event files and RAW timestamps for events
 
-
 % Load in Processed Behavioral File table
-
 
 % FIGURE OUT new LABELS and TTL TIMES
 
@@ -79,30 +75,30 @@ for si = 1:1
         if subROW.(tmpVar)
 
             blmps = {'L','R'};
+            blmpsT = {'learn','recog'};
             for bi = 1:2
 
                 % NWB f names
-                tmpNWBcol = ['nwbS_v',num2str(vi),'_',blmps{bi}];
+                tmpNWBcol = ['nwbS_v' , num2str(vi) , '_' , blmps{bi}];
                 rawNWBname = subROW.(tmpNWBcol){1};
-                filtNWBname = replace(rawNWBname,'filter','raw');
+                filtNWBname = replace(rawNWBname , 'filter' , 'raw');
 
-                subDATAdir = [DATADIR , filesep , subID , filesep , 'Behavioral-data' ,...
-                    filesep , 'Raw'];
-
-                % Behavioral Locs / Names
-
+                % NWB LOC
                 nwbDATAdir = [DATADIR , filesep , subID , filesep , 'NWBprocessing-data\NWB_Data'];
 
-                % Load text block by reading in every line of .txt file
-                % PROGRAMMTICALLY FIND TEXT FILE
+                % BEHAVIORAL LOC
+                subDATAdir = [DATADIR , filesep , subID , filesep , 'Behavioral-data' ,...
+                    filesep , 'Processed'];
 
-                block2use = upper(blockID(1));
-                var2use = ['var',num2str(variantI)];
-                varBl_col = [var2use , '_', block2use , '_txt'];
-
-                textFname = subROW.(varBl_col){1};
+                var2use = ['var',num2str(vi)];
+                textFname = [subID, '_' , var2use , '_' , blmpsT{bi} , '.mat'];
 
                 % NEED TO LOAD
+                cd(nwbDATAdir)
+                rawNWB = nwbRead(rawNWBname);
+
+                eventSTRS = rawNWB.acquisition.get('events').data.load();
+                eventTS = rawNWB.acquisition.get('events').timestamps.load();
 
 
                 
