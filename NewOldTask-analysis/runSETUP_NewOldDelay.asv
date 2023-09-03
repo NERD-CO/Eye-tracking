@@ -28,7 +28,7 @@ switch stage2run
         % Load in excel file
         allSUBtable = readtable('Eyetracking patient summary sheet.xlsx');
 
-        for si = 1:height(allSUBtable)
+        for si = 8:8
             % for si = 1:height(allSUBtable)
 
             subROW = allSUBtable(si,:);
@@ -66,10 +66,13 @@ switch stage2run
         cd(excelLOC)
         % Load in excel file
         allSUBtable = readtable('Eyetracking patient summary sheet.xlsx');
-        for si = 1:1
+        load("NLX_Indices_NOcases.mat","allCell");
+        nlxINDEX = cell2table(allCell,'VariableNames',{'SubID','VarI','Block','StartI','StopI'});
+        for si = 2:2
 
             subROW = allSUBtable(si,:);
             subID = subROW.patientID{1};
+            subNLX = nlxINDEX(matches(nlxINDEX.SubID,subID),:);
 
             for vi = 1:3
                 tmpVar = ['variant',num2str(vi)];
@@ -82,7 +85,7 @@ switch stage2run
                         % NWB f names
                         tmpNWBcol = ['nwbS_v' , num2str(vi) , '_' , blmps{bi}];
                         filtNWBname = subROW.(tmpNWBcol){1};
-                        rawNWBname = replace(rawNWBname , 'filter' , 'raw');
+                        rawNWBname = replace(filtNWBname , 'filter' , 'raw');
 
                         % NWB LOC
                         nwbDATAdir = [DATADIR , filesep , subID , filesep , 'NWBprocessing-data\NWB_Data'];
@@ -108,8 +111,14 @@ switch stage2run
 
                         taskTable = outData.taskinformation;
 
+                        % Extract Var/Block from NLX Table
+                        varROW = subNLX.VarI == vi;
+                        blkROW = matches(subNLX.Block,upper(blmpsT{bi}(1)));
+
+                        subNLXrow = subNLX(varROW & blkROW,:);
+
                         % Create processing function 
-                        [taskTTLtable] = alignTTLevents(taskTable,eventTS,eventSTRS);
+                        [taskTTLtable] = alignTTLevents(taskTable,eventTS,eventSTRS,subNLXrow);
 
                         % Save new Table
                         % CD to new folder and SAVE
@@ -166,8 +175,7 @@ end % END OF main function
 
 
 
-function [fullTABLE] = alignTTLevents(tskTABLE,evtTstamps,evtSTrings)
-
+function [fullTABLE] = alignTTLevents(tskTABLE,evtTstamps,evtSTrings,subINFO)
 
 evtSTrings2 = cellstr(evtSTrings);
 % Remove any START and STOP
@@ -182,36 +190,42 @@ fracZero = sum(eventHEX == 0) / length(eventHEX);
 
 if fracZero > 0.8
 
-    getZeroTimes = evtTstamps(eventPROC_1_ind);
-    getEvenStrings = evtSTrings2(eventPROC_1_ind);
-    offSetZeros = diff(getZeroTimes)/1000000;
+    eventTStamps2 = evtTstamps(eventPROC_1_ind);
 
-    sharPoffsetS = find(offSetZeros > 20);
-    % sharPoffset + 1 = start of new segment
+    if subINFO.StartI{1} > 0 && length(subINFO.StartI{1}) == 1
 
-    for si = 1:length(sharPoffsetS)
-        tmpSlength = numel(sharPoffsetS(si) + 1:length(getZeroTimes));
-        if tmpSlength == height(tskTABLE)
-            startINDEX = sharPoffsetS(si) + 1;
+        finalEvtStrings = eventPROC_2(subINFO.StartI{1}:subINFO.StopI{1});
+        finalEvtTimes = eventTStamps2(subINFO.StartI{1}:subINFO.StopI{1});
+
+        if length(finalEvtTimes) < height(tskTABLE)
+            if subINFO.StartI{1} == 1
+                finalEvtStrings = [finalEvtStrings,{'N'}];
+                finalEvtTimes = [NaN ; finalEvtTimes];
+            end
         end
+
+
+    elseif subINFO.StartI{1} > 0 && length(subINFO.StartI{1}) == 2
+
+        test = 1;
+
+
+
+    else
+        test = 1;
+
+
     end
-
-    trimEvents = startINDEX:length(getZeroTimes);
-
-    finalEvtStrings = getEvenStrings(trimEvents);
-    finalEvtTimes = getZeroTimes(trimEvents);
 
 
 else
 
-
     test = 1;
 
 
-
-
-
 end
+
+
 
 
 tskTABLE.TTLstrings = finalEvtStrings;

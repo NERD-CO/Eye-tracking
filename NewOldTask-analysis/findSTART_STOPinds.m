@@ -27,7 +27,7 @@ cd(excelLOC)
 allSUBtable = readtable('Eyetracking patient summary sheet.xlsx');
 allCOUNT = 1;
 allCell = cell(100,5);
-for si = 8:8
+for si = 1:10
 
     subROW = allSUBtable(si,:);
     subID = subROW.patientID{1};
@@ -50,7 +50,20 @@ for si = 8:8
 
                 % CHECK NWB_LOC folder for DAYS
                 tmpCheckd = dir(nwbDATAdir);
-               % tmpCheckd2 = %
+                tmpCheckd2 = {tmpCheckd.name};
+                tmpCheckd3 = tmpCheckd2(~ismember(tmpCheckd2,{'..','.'}));
+
+                if ~any(contains(tmpCheckd3,'variant'))
+                     nwbDATAdir = [DATADIR , filesep , subID , filesep , 'NWBprocessing-data\NWB_Data'];
+                else
+
+                    tmpDIRchck = [nwbDATAdir , filesep , tmpVar];
+                    nwbDATAdir = tmpDIRchck;
+
+                end
+
+
+
 
                 % BEHAVIORAL LOC
                 subDATAdir = [DATADIR , filesep , subID , filesep , 'Behavioral-data' ,...
@@ -94,7 +107,17 @@ for si = 8:8
 
     end
 
+    disp(['Num ', num2str(si) ,' out of 10 done'])
+
 end
+
+% 
+rows2keep = cellfun(@(x) ~isempty(x), allCell(:,1), 'UniformOutput', true);
+allCell = allCell(rows2keep,:);
+
+% cd('Z:\MW_JAT_Backup\EyeTrack_Manuscript')
+save("NLX_Indices_NOcases.mat","allCell");
+
 
 
 
@@ -138,7 +161,7 @@ fracZero = sum(eventHEX == 0) / length(eventHEX);
 if fracZero > 0.8
 
     getZeroTimes = evtTstamps(eventPROC_1_ind);
-    getEvenStrings = evtSTrings2(eventPROC_1_ind);
+    % getEvenStrings = evtSTrings2(eventPROC_1_ind);
     offSetZeros = diff(getZeroTimes)/1000000;
 
     % NEED TO MAKE OFFSET A FRACTION -----
@@ -260,6 +283,15 @@ else % HEX cases
             % end
         end
 
+        if startINDEX == 0
+            if eventHEX(1) == 55
+
+                startINDEX = 1;
+                stopINDEX = length(eventHEX);
+
+            end
+        end
+
     else % TTLS ARE MISSING
 
         if height(tskTABLE) > 502
@@ -270,15 +302,30 @@ else % HEX cases
 
         % Remove zeros
         eventHEX = eventHEX(eventHEX ~= 0);
+        % Remove 255
+        eventHEX = eventHEX(eventHEX ~= 255);
 
-        % CHECK IF MISSING FROM front
-        frontOFFset = 502 - length(eventHEX);
-        ttlValoff = tskTABLE.TTLvalue(frontOFFset+1:502);
+        if length(eventHEX) == height(tskTABLE)
 
-        if isequal(ttlValoff,eventHEX)
+            startINDEX = 1;
+            stopINDEX = 502;
 
-            startINDEX = -(frontOFFset+1);
-            stopINDEX = -502;
+        elseif eventHEX(1) ~= 55
+            % CHECK IF MISSING FROM front
+            frontOFFset = 502 - length(eventHEX);
+            ttlValoff = tskTABLE.TTLvalue(frontOFFset+1:502);
+
+            if isequal(ttlValoff,eventHEX)
+
+                startINDEX = -(frontOFFset+1);
+                stopINDEX = -502;
+
+            end
+
+        else
+
+            startINDEX = 1;
+            stopINDEX = length(eventHEX);
 
         end
 

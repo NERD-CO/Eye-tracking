@@ -1,12 +1,16 @@
 [Timestamps, EventIDs, TTLs, Extras, EventStrings, Header] =...
-           Nlx2MatEV('Events.nev', [1 1 1 1 1], 1, 1, [] )
+           Nlx2MatEV('Events.nev', [1 1 1 1 1], 1, 1, [] );
 
 %%
-evst22 = EventStrings(1:1011)
-evst2 = evst22(contains(evst22,'AcqSystem'))
+
+evst2 = EventStrings(contains(EventStrings,'AcqSystem'))
 evst3 = extractBetween(evst2,49,54);
 evst4 = hex2dec(evst3) 
 tabulate(evst4);
+
+
+%% 97 598
+%% 600 1102
 
 %%
 
