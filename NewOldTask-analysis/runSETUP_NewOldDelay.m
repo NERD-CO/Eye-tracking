@@ -68,7 +68,7 @@ switch stage2run
         allSUBtable = readtable('Eyetracking patient summary sheet.xlsx');
         load("NLX_Indices_NOcases.mat","allCell");
         nlxINDEX = cell2table(allCell,'VariableNames',{'SubID','VarI','Block','StartI','StopI'});
-        for si = 4:4
+        for si = 8:8
 
             subROW = allSUBtable(si,:);
             subID = subROW.patientID{1};
@@ -192,7 +192,7 @@ if fracZero > 0.8
 
     eventTStamps2 = evtTstamps(eventPROC_1_ind);
 
-    if subINFO.StartI{1}(1) > 0 && length(subINFO.StartI{1}) == 1
+    if length(subINFO.StartI{1}) == 1
 
         finalEvtStrings = eventPROC_2(subINFO.StartI{1}:subINFO.StopI{1});
         finalEvtTimes = eventTStamps2(subINFO.StartI{1}:subINFO.StopI{1});
@@ -204,7 +204,7 @@ if fracZero > 0.8
             end
         end
 
-    elseif subINFO.StartI{1}(1) > 0 && length(subINFO.StartI{1}) == 2
+    elseif length(subINFO.StartI{1}) == 2
 
         segment1 = subINFO.StartI{1}(1):subINFO.StopI{1}(1);
         segment2 = subINFO.StartI{1}(2):subINFO.StopI{1}(2);
@@ -212,16 +212,51 @@ if fracZero > 0.8
         finalEvtStrings = eventPROC_2([segment1 , segment2]);
         finalEvtTimes = eventTStamps2([segment1 , segment2]);
 
-    else
-        test = 1;
-
-
     end
 
 
 else
 
-    test = 1;
+    if subINFO.StartI{1}(1) > 0
+
+        eventPROC_2 = eventPROC_2(eventHEX ~= 0);
+
+        if height(tskTABLE) > 502
+            tskTABLE = tskTABLE(tskTABLE.TTLvalue ~= 0,:);
+        end
+
+        eventTStamps2 = evtTstamps(eventPROC_1_ind);
+        eventTStamps3 = eventTStamps2(eventHEX ~= 0);
+
+        finalEvtStrings = eventPROC_2(subINFO.StartI{1}:subINFO.StopI{1});
+        finalEvtTimes = eventTStamps3(subINFO.StartI{1}:subINFO.StopI{1});
+
+        if length(finalEvtTimes) < height(tskTABLE)
+            if subINFO.StartI{1} == 1
+                finalEvtStrings = [finalEvtStrings ; {'NaN'}];
+                finalEvtTimes = [finalEvtTimes ; NaN];
+            else
+                test = 1;
+            end
+        end
+
+    else
+
+        eventPROC_2 = eventPROC_2(eventHEX ~= 0);
+        eventTStamps2 = evtTstamps(eventPROC_1_ind);
+        eventTStamps3 = eventTStamps2(eventHEX ~= 0);
+
+        if height(tskTABLE) > 502
+            tskTABLE = tskTABLE(tskTABLE.TTLvalue ~= 0,:);
+        end
+
+        finalEvtStrings = [repmat({'NaN'},(subINFO.StartI{1}(1)*-1)-1,1) ; eventPROC_2];
+        finalEvtTimes = [nan((subINFO.StartI{1}(1)*-1)-1,1) ; eventTStamps3];
+
+
+
+
+    end
 
 
 end

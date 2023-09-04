@@ -27,7 +27,7 @@ cd(excelLOC)
 allSUBtable = readtable('Eyetracking patient summary sheet.xlsx');
 allCOUNT = 1;
 allCell = cell(100,5);
-for si = 1:10
+for si = 6:6
 
     subROW = allSUBtable(si,:);
     subID = subROW.patientID{1};
